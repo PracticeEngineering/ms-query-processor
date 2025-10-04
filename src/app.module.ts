@@ -1,10 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { DatabaseModule } from './infraestructure/database/database.module';
+import { QUERY_REPOSITORY } from './application/ports/iquery.repository';
+import { PostgresQueryRepository } from './infraestructure/repositories/postgres.query.repository';
+import { GetTrackingHistoryUseCase } from './application/use-cases/get-tracking-history.use-case';
+import { ListShipmentsByStatusUseCase } from './application/use-cases/list-shipments-by-status.use-case';
 
 @Module({
-  imports: [],
+  imports: [DatabaseModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    GetTrackingHistoryUseCase,
+    ListShipmentsByStatusUseCase,
+    {
+      provide: QUERY_REPOSITORY,
+      useClass: PostgresQueryRepository,
+    },
+  ],
 })
 export class AppModule {}
