@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, ValidationPipe } from '@nestjs/common';
 import { GetTrackingHistoryUseCase } from './application/use-cases/get-tracking-history.use-case';
 import { ListShipmentsByStatusUseCase } from './application/use-cases/list-shipments-by-status.use-case';
-import { PaginationQueryDto } from './infraestructure/controllers/dtos/pagination-query.dto';
+import { PaginationQueryDto } from './infrastructure/controllers/dtos/pagination-query.dto';
 
 @Controller()
 export class AppController {
