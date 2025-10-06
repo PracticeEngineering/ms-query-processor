@@ -5,7 +5,7 @@ import { DB_CONNECTION } from '../database/database.provider';
 import { Shipment } from '../../domain/shipment.entity';
 import { Checkpoint } from '../../domain/checkpoint.entity';
 import { LOGGER_PROVIDER_TOKEN } from '../logger/logger.constants';
-import { Logger } from 'pino';
+import type { Logger } from 'pino';
 
 @Injectable()
 export class PostgresQueryRepository implements IQueryRepository {

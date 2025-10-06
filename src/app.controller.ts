@@ -10,7 +10,7 @@ import { GetTrackingHistoryUseCase } from './application/use-cases/get-tracking-
 import { ListShipmentsByStatusUseCase } from './application/use-cases/list-shipments-by-status.use-case';
 import { PaginationQueryDto } from './infrastructure/controllers/dtos/pagination-query.dto';
 import { LOGGER_PROVIDER_TOKEN } from './infrastructure/logger/logger.constants';
-import { Logger } from 'pino';
+import type { Logger } from 'pino';
 
 @Controller()
 export class AppController {

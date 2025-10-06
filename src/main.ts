@@ -3,7 +3,7 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GlobalExceptionLoggerFilter } from './infrastructure/common/filters/global-exception-logger.filter';
 import { LOGGER_PROVIDER_TOKEN } from './infrastructure/logger/logger.constants';
-import { Logger } from 'pino';
+import type { Logger } from 'pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
