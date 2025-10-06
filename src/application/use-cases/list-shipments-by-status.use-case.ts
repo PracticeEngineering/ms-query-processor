@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { IQueryRepository } from '../ports/iquery.repository';
 import { QUERY_REPOSITORY } from '../ports/iquery.repository';
 import { LOGGER_PROVIDER_TOKEN } from '../../infrastructure/logger/logger.constants';
-import { Logger } from 'pino';
+import type { Logger } from 'pino';
 
 @Injectable()
 export class ListShipmentsByStatusUseCase {
