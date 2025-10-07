@@ -7,7 +7,7 @@ import { Checkpoint } from '../../domain/checkpoint.entity';
 import { LOGGER_PROVIDER_TOKEN } from '../logger/logger.constants';
 import type { Logger } from 'pino';
 
-import { ShipmentStatus } from '../controllers/dtos/list-shipments-by-status.dto';
+import { ShipmentStatus } from '../../domain/shipment-status.enum';
 
 @Injectable()
 export class PostgresQueryRepository implements IQueryRepository {

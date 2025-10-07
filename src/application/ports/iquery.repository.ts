@@ -1,4 +1,4 @@
-import { ShipmentStatus } from '../../infrastructure/controllers/dtos/list-shipments-by-status.dto';
+import { ShipmentStatus } from '../../domain/shipment-status.enum';
 import { Checkpoint } from '../../domain/checkpoint.entity';
 import { Shipment } from '../../domain/shipment.entity';
 
