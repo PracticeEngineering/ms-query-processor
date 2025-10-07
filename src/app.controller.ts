@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { GetTrackingHistoryUseCase } from './application/use-cases/get-tracking-history.use-case';
 import { ListShipmentsByStatusUseCase } from './application/use-cases/list-shipments-by-status.use-case';
+import { ListShipmentsByStatusDto } from './infrastructure/controllers/dtos/list-shipments-by-status.dto';
 import { PaginationQueryDto } from './infrastructure/controllers/dtos/pagination-query.dto';
 import { LOGGER_PROVIDER_TOKEN } from './infrastructure/logger/logger.constants';
 import type { Logger } from 'pino';
@@ -35,16 +36,18 @@ export class AppController {
 
   @Get('shipments')
   async listShipmentsByStatus(
-    @Query('status') status: string,
+    @Query(new ValidationPipe({ transform: true }))
+    query: ListShipmentsByStatusDto,
     @Query(new ValidationPipe({ transform: true })) pagination: PaginationQueryDto,
   ) {
-    this.logger.info({ status, pagination }, 'Request to list shipments');
+    this.logger.info({ query, pagination }, 'Request to list shipments');
     const { page, limit } = pagination;
-    const { shipments, total } = await this.listShipmentsByStatusUseCase.execute(
-      status,
-      page,
-      limit,
-    );
+    const { shipments, total } =
+      await this.listShipmentsByStatusUseCase.execute(
+        query.status,
+        page,
+        limit,
+      );
 
     return {
       data: shipments,
