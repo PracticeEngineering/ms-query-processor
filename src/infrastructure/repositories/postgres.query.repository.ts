@@ -7,6 +7,8 @@ import { Checkpoint } from '../../domain/checkpoint.entity';
 import { LOGGER_PROVIDER_TOKEN } from '../logger/logger.constants';
 import type { Logger } from 'pino';
 
+import { ShipmentStatus } from '../controllers/dtos/list-shipments-by-status.dto';
+
 @Injectable()
 export class PostgresQueryRepository implements IQueryRepository {
   constructor(
@@ -60,11 +62,18 @@ export class PostgresQueryRepository implements IQueryRepository {
   }
 
   async findShipmentsByStatus(
-    status: string,
+    status: ShipmentStatus | undefined,
     page: number,
     limit: number,
   ): Promise<{ shipments: Shipment[]; total: number }> {
     const offset = (page - 1) * limit;
+    const params: (string | number)[] = [];
+    let whereClause = '';
+
+    if (status) {
+      whereClause = 'WHERE current_status = $1';
+      params.push(status);
+    }
 
     try {
       this.logger.info(
@@ -72,14 +81,14 @@ export class PostgresQueryRepository implements IQueryRepository {
         'Executing findShipmentsByStatus query',
       );
       const totalResult = await this.pool.query(
-        'SELECT COUNT(id) FROM shipments WHERE current_status = $1',
-        [status],
+        `SELECT COUNT(id) FROM shipments ${whereClause}`,
+        params,
       );
       const total = parseInt(totalResult.rows[0].count, 10);
 
       const shipmentsResult = await this.pool.query(
-        'SELECT * FROM shipments WHERE current_status = $1 ORDER BY updated_at DESC LIMIT $2 OFFSET $3',
-        [status, limit, offset],
+        `SELECT * FROM shipments ${whereClause} ORDER BY updated_at DESC LIMIT ${params.length + 1} OFFSET ${params.length + 2}`,
+        [...params, limit, offset],
       );
       const shipments: Shipment[] = shipmentsResult.rows.map((row) => ({
         id: row.id,
