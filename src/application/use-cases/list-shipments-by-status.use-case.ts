@@ -3,7 +3,7 @@ import type { IQueryRepository } from '../ports/iquery.repository';
 import { QUERY_REPOSITORY } from '../ports/iquery.repository';
 import { LOGGER_PROVIDER_TOKEN } from '../../infrastructure/logger/logger.constants';
 import type { Logger } from 'pino';
-import { ShipmentStatus } from '../../infrastructure/controllers/dtos/list-shipments-by-status.dto';
+import { ShipmentStatus } from '../../domain/shipment-status.enum';
 
 @Injectable()
 export class ListShipmentsByStatusUseCase {
@@ -18,6 +18,19 @@ export class ListShipmentsByStatusUseCase {
       { status, page, limit },
       'Finding shipments by status with pagination',
     );
-    return this.queryRepository.findShipmentsByStatus(status, page, limit);
+    const { shipments, total } = await this.queryRepository.findShipmentsByStatus(
+      status,
+      page,
+      limit,
+    );
+
+    return {
+      data: shipments,
+      pagination: {
+        totalItems: total,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }

@@ -12,6 +12,7 @@ import { ListShipmentsByStatusDto } from './infrastructure/controllers/dtos/list
 import { PaginationQueryDto } from './infrastructure/controllers/dtos/pagination-query.dto';
 import { LOGGER_PROVIDER_TOKEN } from './infrastructure/logger/logger.constants';
 import type { Logger } from 'pino';
+import { ShipmentDto } from './infrastructure/controllers/dtos/shipment.dto';
 
 @Controller()
 export class AppController {
@@ -22,7 +23,9 @@ export class AppController {
   ) {}
 
   @Get('tracking/:trackingId')
-  async getTrackingHistory(@Param('trackingId') trackingId: string) {
+  async getTrackingHistory(
+    @Param('trackingId') trackingId: string,
+  ): Promise<ShipmentDto> {
     this.logger.info({ trackingId }, 'Request to get tracking history');
     const { shipment, checkpoints } = await this.getTrackingHistoryUseCase.execute(
       trackingId,
@@ -42,20 +45,6 @@ export class AppController {
   ) {
     this.logger.info({ query, pagination }, 'Request to list shipments');
     const { page, limit } = pagination;
-    const { shipments, total } =
-      await this.listShipmentsByStatusUseCase.execute(
-        query.status,
-        page,
-        limit,
-      );
-
-    return {
-      data: shipments,
-      pagination: {
-        totalItems: total,
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
+    return this.listShipmentsByStatusUseCase.execute(query.status, page, limit);
   }
 }
