@@ -87,7 +87,7 @@ export class PostgresQueryRepository implements IQueryRepository {
       const total = parseInt(totalResult.rows[0].count, 10);
 
       const shipmentsResult = await this.pool.query(
-        `SELECT * FROM shipments ${whereClause} ORDER BY updated_at DESC LIMIT ${params.length + 1} OFFSET ${params.length + 2}`,
+        `SELECT * FROM shipments ${whereClause} ORDER BY updated_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
         [...params, limit, offset],
       );
       const shipments: Shipment[] = shipmentsResult.rows.map((row) => ({
