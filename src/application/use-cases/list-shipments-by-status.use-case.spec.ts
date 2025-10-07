@@ -1,9 +1,9 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { ListShipmentsByStatusUseCase } from './list-shipments-by-status.use-case';
 import { QUERY_REPOSITORY, IQueryRepository } from '../ports/iquery.repository';
 import { LOGGER_PROVIDER_TOKEN } from '../../infrastructure/logger/logger.constants';
 import { Shipment } from '../../domain/shipment.entity';
+import { ShipmentStatus } from '../../domain/shipment-status.enum';
 
 describe('ListShipmentsByStatusUseCase', () => {
   let useCase: ListShipmentsByStatusUseCase;
@@ -42,18 +42,32 @@ describe('ListShipmentsByStatusUseCase', () => {
 
   describe('execute', () => {
     it('should return a list of shipments', async () => {
-      const status = 'DELIVERED';
+      const status = ShipmentStatus.DELIVERED;
       const page = 1;
       const limit = 10;
-      const shipments = [
-        new Shipment('any-shipment-id', 'any-tracking-id', 'DELIVERED', []),
+      const shipments: Shipment[] = [
+        {
+          id: 'any-shipment-id',
+          trackingId: 'any-tracking-id',
+          currentStatus: ShipmentStatus.DELIVERED,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
       ];
+      const total = 1;
 
-      mockQueryRepository.findShipmentsByStatus.mockResolvedValue(shipments);
+      mockQueryRepository.findShipmentsByStatus.mockResolvedValue({ shipments, total });
 
       const result = await useCase.execute(status, page, limit);
 
-      expect(result).toEqual(shipments);
+      expect(result).toEqual({
+        data: shipments,
+        pagination: {
+          totalItems: total,
+          currentPage: page,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
       expect(queryRepository.findShipmentsByStatus).toHaveBeenCalledWith(
         status,
         page,
